@@ -17,41 +17,30 @@ int main() {
     string disk_map;
     file >> disk_map;
 
-    // Parse the disk map
-    // Even positions (0,2,4...) represent file lengths
-    // Odd positions (1,3,5...) represent free lengths
-    // ID increments for each file encountered
-    vector<long long> blocks; // store file IDs and -1 for free
+    vector<long long> blocks;
     vector<FileInfo> files;
-    {
-        int file_id = 0;
-        int pos = 0;
-        for (size_t i = 0; i < disk_map.size(); i += 2) {
-            int file_len = disk_map[i] - '0';
-            int free_len = 0;
-            if (i + 1 < disk_map.size()) {
-                free_len = disk_map[i + 1] - '0';
-            }
 
-            // File segment
-            if (file_len > 0) {
-                FileInfo info;
-                info.start = pos;
-                info.length = file_len;
-                files.push_back(info);
+    int file_id = 0;
+    int pos = 0;
+    for (size_t i = 0; i < disk_map.size(); i += 2) {
+        int file_len = disk_map[i] - '0';
+        if (file_len > 0) {
+            FileInfo info;
+            info.start = pos;
+            info.length = file_len;
+            files.push_back(info);
 
-                for (int j = 0; j < file_len; j++) {
-                    blocks.push_back(file_id);
-                    pos++;
-                }
-                file_id++;
-            }
-
-            // Free segment
-            for (int j = 0; j < free_len; j++) {
-                blocks.push_back(-1);
+            for (int j = 0; j < file_len; j++) {
+                blocks.push_back(file_id);
                 pos++;
             }
+            file_id++;
+        }
+
+        int free_len = disk_map[i + 1] - '0';
+        for (int j = 0; j < free_len; j++) {
+            blocks.push_back(-1);
+            pos++;
         }
     }
 
