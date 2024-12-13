@@ -7,35 +7,18 @@
 using namespace std;
 typedef long long ll;
 
-// Solve a system of linear Diophantine equations for a claw machine:
-// a*X_A + b*X_B = X_P
-// a*Y_A + b*Y_B = Y_P
-// with cost = 3a + b minimized for nonnegative integers a,b.
-//
-// This simplified version only checks the direct computed solution from the formula.
-// It does not attempt to adjust the solution by a parameter t for better feasibility or cost.
 bool solve(ll XA, ll YA, ll XB, ll YB, ll XP, ll YP, ll &bestCost) {
-    ll D = XA * YB - YA * XB;
-    if (D == 0) return false; // No unique solution
+    if (XA * YB - YA * XB == 0) return false;
 
-    ll numA = XP * YB - YP * XB;
-    ll numB = -XP * YA + YP * XA;
+    if ((XP * YB - YP * XB) % (XA * YB - YA * XB) != 0) return false;
+    ll CA = (XP * YB - YP * XB) / (XA * YB - YA * XB);
 
-    if (numA % D != 0 || numB % D != 0) return false;
+    if ((XP - XA * CA) % XB != 0) return false;
+    ll CB = (XP - XA * CA) / XB;
 
-    ll a = numA / D;
-    ll b = numB / D;
+    bestCost = CA * 3 + CB;
 
-    // Check if this solution is nonnegative
-    if (a >= 0 && b >= 0) {
-        ll cost = 3LL * a + b;
-        if (cost < bestCost) {
-            bestCost = cost;
-            return true;
-        }
-    }
-
-    return false;
+    return true;
 }
 
 int main() {
