@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-// Function to trim leading and trailing whitespaces
 string trim(const string &s) {
     size_t start = s.find_first_not_of(" \t\r\n");
     size_t end = s.find_last_not_of(" \t\r\n");
@@ -10,7 +10,6 @@ string trim(const string &s) {
     return s.substr(start, end - start + 1);
 }
 
-// Function to split a string by delimiter and convert to long longegers
 vector<long long> split_program(const string &s, char delimiter=',') {
     vector<long long> program;
     string token;
@@ -30,11 +29,9 @@ vector<long long> split_program(const string &s, char delimiter=',') {
 }
 
 int main() {
-    // Initialize registers
     long long A = 0, B = 0, C = 0;
     string line;
 
-    // Read Register A
     getline(cin, line);
     size_t pos = line.find(':');
     if (pos != string::npos) {
@@ -44,7 +41,6 @@ int main() {
         return 1;
     }
 
-    // Read Register B
     getline(cin, line);
     pos = line.find(':');
     if (pos != string::npos) {
@@ -54,7 +50,6 @@ int main() {
         return 1;
     }
 
-    // Read Register C
     getline(cin, line);
     pos = line.find(':');
     if (pos != string::npos) {
@@ -63,9 +58,9 @@ int main() {
         cerr << "Invalid input format for Register C." << endl;
         return 1;
     }
+
     getline(cin, line);
 
-    // Read Program
     getline(cin, line);
     pos = line.find(':');
     vector<long long> program;
@@ -77,7 +72,6 @@ int main() {
         return 1;
     }
 
-    // Simulation variables
     size_t ip = 0; // Instruction polong longer
     vector<long long> outputs;
 
@@ -89,9 +83,9 @@ int main() {
 
     while (ip < program.size()) {
         if (ip + 1 >= program.size()) {
-            // No operand available; halt
             break;
         }
+
         long long opcode = program[ip];
         long long operand = program[ip + 1];
         // Debug: prlong long current instruction
@@ -101,13 +95,13 @@ int main() {
         long long operand_value = 0;
         if (operand_is_combo[opcode]) {
             // Combo operand
-            if (operand >= 0 && operand <=3) {
+            if (operand >= 0 && operand <= 3) {
                 operand_value = operand;
-            } else if (operand ==4) {
+            } else if (operand == 4) {
                 operand_value = A;
-            } else if (operand ==5) {
+            } else if (operand == 5) {
                 operand_value = B;
-            } else if (operand ==6) {
+            } else if (operand == 6) {
                 operand_value = C;
             } else {
                 cerr << "Invalid combo operand: " << operand << endl;
