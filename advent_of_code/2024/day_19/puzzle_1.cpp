@@ -23,10 +23,10 @@ int main() {
     }   
 
     getline(file, line);
-    long long matches = 0;
+    int matches = 0;
     while (getline(file, line)) {
         int n = line.size();
-        vector<long long> dp(n + 1, 0);
+        vector<bool> dp(n + 1, 0);
         dp[0] = 1;
 
         for (int i = 0; i < n; i++) {
@@ -34,12 +34,12 @@ int main() {
                 int l = pattern.length();
 
                 if (i + l <= n && line.substr(i, l) == pattern) {
-                    dp[i + l] += dp[i];
+                    dp[i + l] = dp[i] || dp[i + l];
                 }
             }
         }
 
-        matches += dp[n];
+        if (dp[n]) matches++;
     }
 
     cout << matches;
