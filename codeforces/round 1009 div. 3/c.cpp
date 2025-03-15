@@ -6,38 +6,17 @@ void solve() {
     int x;
     cin >> x;
 
-    int temp = x;
-    int bits = 0;
-    while (temp) {
-        if (temp & 1)bits++;
-        temp >>= 1;
-    }
-    if (bits == 1) {
-        cout << -1 << '\n';
-        return;
-    }
-
-    temp = x + 1;
-    bits = 0;
-    while (temp) {
-        if (temp & 1) bits++;
-        temp >>= 1;
-    }
-    if (bits == 1) {
-        cout << -1 << '\n';
-        return;
-    }
-
-    for (int y = 1; y < x; y++) {
-        int lower = x - y + 1;
-        int upper = x + y - 1;
- 
-        int XOR = x ^ y;
-        if (XOR >= lower && XOR <= upper) {
-            cout << y << '\n';
-            return;
+    for (int i = 0; i < 32; i++) {
+        for (int j = 0; j < 32; j++) {
+            int y = (1 << i) | (1 << j);
+            if (y < x && x + y > (x ^ y) && x + (x ^ y) > y && y + (x ^ y) > x) {
+                cout << y << '\n';
+                return;
+            }
         }
     }
+    cout << -1 << '\n';
+    return;
 }
 
 int main() {
