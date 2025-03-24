@@ -1,56 +1,45 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <set>
 
 using namespace std;
 
 void solve() {
-    int n, R, C;
-    cin >> n >> R >> C;
-    
+    int n, r, c;
+    cin >> n >> r >> c;
+
     string s;
     cin >> s;
-    
-    vector<pair<int, int>> f(n + 1);
-    f[0] = {0, 0};
-    
-    for (int i = 0; i < n; i++){
-        int pos_r = f[i].first, pos_c = f[i].second;
+
+    pair<int, int> t = {r, c};
+    pair<int, int> f = {0, 0};
+    set<pair<int, int>> setik;
+    setik.insert({0, 0});
+
+    for (int i = 0; i < n; i++) {
         char dir = s[i];
-        
+
         if (dir == 'N') {
-            pos_r--;
-        } else if (dir == 'S') {
-            pos_r++;
+            f.first++;
+            t.first++;
         } else if (dir == 'W') {
-            pos_c--;
+            f.second++;
+            t.second++;
+        } else if (dir == 'S') {
+            f.first--;
+            t.first--;
         } else if (dir == 'E') {
-            pos_c++;
+            f.second--;
+            t.second--;
         }
 
-        f[i + 1] = {pos_r, pos_c};
-    }
-    
-    map<pair<int,int>, int> firstOccurrence;
-    for (int i = 0; i <= n; i++){
-        pair<int,int> coord = f[i];
-
-        if (firstOccurrence.find(coord) == firstOccurrence.end()){
-            firstOccurrence[coord] = i;
+        setik.insert(f);
+        if (setik.find(t) != setik.end()) {
+            cout << 1;
+        } else {
+            cout << 0;
         }
     }
-    
-    string result(n, '0');
-    for (int t = 1; t <= n; t++){
-        int target_r = f[t].first - R;
-        int target_c = f[t].second - C;
-
-        pair<int,int> target = {target_r, target_c};
-
-        if (firstOccurrence.find(target) != firstOccurrence.end() && firstOccurrence[target] <= t) {
-            result[t - 1] = '1';
-        }
-    }
-    
-    cout << result;
 }
 
 int main() {
