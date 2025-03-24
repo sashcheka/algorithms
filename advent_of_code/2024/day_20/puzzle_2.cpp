@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <unordered_set>
 
 using namespace std;
 
@@ -10,6 +11,14 @@ vector<pair<int, int>> directions = {{0, 1}, {0, -1}, {-1, 0}, {1, 0}};
 int sr, sc;
 int er, ec;
     
+string serialize_path(const vector<pair<int, int>>& path) {
+    stringstream ss;
+    for (const auto& [x, y] : path) {
+        ss << x << "," << y << ";";
+    }
+    return ss.str();
+}
+
 pair<int, vector<pair<int, int>>> find_path(vector<vector<char>> grid) {
     int n = grid.size();
     int m = grid[0].size();
@@ -68,21 +77,53 @@ int main() {
     int n = grid.size();
     int m = grid[0].size();
 
-    auto [dist, path] = find_path(grid);
+    auto [basic_dist, basic_path] = find_path(grid);
 
-    int cheat_dist = 0;
-    for (auto [r, c] : path) {
-        int dr = abs(r - er);
-        int dc = abs(c - ec);
+    int res = 0;
+    // vector<vector<bool>> visited(n, vector<bool>(m, false));
+    // vector<vector<vector<pair<int, int>>>> visited(n, vector<vector<pair<int, int>>>(m));
+    unordered_set<string> visited; 
 
-        if (dr + dc <= 20) {
-            cout << r << ' ' << c << '\n';
-            cout << dist - cheat_dist - dr - dc << '\n';
-            cout << '\n';
+    queue<tuple<int, int, int, int, vector<pair<int, int>>, int>> q; // dist, row, col, cheats, path
+    q.push({0, sr, sc, 20, {}, 0});
+
+    while (!q.empty()) {
+        auto [dist, row, col, cheats, path, cheat] = q.front();
+        q.pop();
+
+        string spath = !!!;
+        if (visited.count(spath)) continue;
+        visited.insert(spath);
+
+        if (row == er && col == ec) {
+            if (basic_dist >= dist) cout << basic_dist - dist << '\n';
+            if (basic_dist - dist >= 50) res++;
         }
 
-        cheat_dist++;
+        for (auto [dr, dc] : directions) {
+            int nr = dr + row;
+            int nc = dc + col;
+
+            if (nr >= 0 && nr < n && nc >= 0 && nc < m) {
+                if (grid[nr][nc] == '#' && cheats > 0 && (cheat == 0 || cheat == 1)) {
+                    path.push_back({nr, nc});
+                    q.push({dist + 1, nr, nc, cheats - 1, path, 1});
+                } else if (grid[nr][nc] != '#') {
+                    if (cheat == 0) {
+                        path.push_back({nr, nc});
+                        q.push({dist + 1, nr, nc, cheats, path, 0});
+                    } else if (cheat == 1) {
+                        path.push_back({nr, nc});
+                        q.push({dist + 1, nr, nc, cheats, path, 2});
+                    } else if (cheat == 2) {
+                        path.push_back({nr, nc});
+                        q.push({dist + 1, nr, nc, cheats, path, 2});
+                    }
+                }
+            }
+        }
     }
     
+    cout << res;
     return 0;
 }
