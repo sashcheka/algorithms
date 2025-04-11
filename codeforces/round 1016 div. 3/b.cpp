@@ -6,24 +6,15 @@ void solve() {
     string s;
     cin >> s;
 
+    bool seen_not_zero = false;
     int n = s.size();
-    vector<int> cands(n, 0);
-
-    for (int i = 0; i < n - 1; i++) {
-        if (s[i] != '0') {
-            cands[i + 1] = cands[i] + 1;
-        } else {
-            cands[i + 1] = cands[i];
-        }
+    for (int i = n - 1; i >= 0; i--) {
+        if (s[i] != '0') seen_not_zero = true;
+        else if (seen_not_zero) n--;
     }
-
-    int ans = INT_MAX;
-    for (int i = 0; i < n; i++) {
-        if (s[i] != '0') {
-            ans = min(ans, cands[i] + n - i - 1);
-        }
-    }
-    cout << ans << '\n';
+    
+    cout << n - 1 << '\n';
+    return;
 }
 
 int main() {
