@@ -41,45 +41,41 @@ class SegmentTree:
         return left_result + right_result
 
     def find_kth_zero(self, l, r, k, node, start, end):
-        if r < start or end < l:
-            return -1
-        if l <= start and end <= r:
-            if self.tree[node] < k:
-                return -1  # Not enough zeros in the range
-            return self._find_kth_zero_in_range(l, r, k, node, start, end)
-        
-        mid = (start + end) // 2
-        left_child = 2 * node + 1
-        right_child = 2 * node + 2
-        
-        left_count = self.query(l, r, left_child, start, mid)
-        
-        if left_count >= k:
-            return self.find_kth_zero(l, r, k, left_child, start, mid)
-        else:
-            return self.find_kth_zero(l, r, k - left_count, right_child, mid + 1, end)
+        if end < l or start > r:
+            return (0, -1)
 
-    def _find_kth_zero_in_range(self, l, r, k, node, start, end):
-        # We need to perform a binary search to find the k-th zero in this range
-        # We are guaranteed that there are enough zeros in this range.
-        
-        # Start from the root and narrow down using binary search within the segment.
-        if start == end:
-            return start  # This is the position of the k-th zero
-        
+        # Current segment is fully within [l, r]
+        if l <= start and end <= r:
+            total = self.tree[node]
+            if total < k:
+                return (total, -1)
+                
+            if start == end:
+                return (total, start)
+
+            mid = (start + end) // 2
+            left = 2 * node + 1
+            left_total = self.tree[left]
+            if left_total >= k:
+                return self.find_kth_zero(l, r, k, left, start, mid)
+            else:
+                res = self.find_kth_zero(l, r, k - left_total, left + 1, mid + 1, end)
+                return (total, res[1])
+
+        # Partially overlapping: check left and right children
         mid = (start + end) // 2
-        left_child = 2 * node + 1
-        right_child = 2 * node + 2
-        
-        # Count of zeros in the left child
-        left_count = self.tree[left_child]
-        
-        if left_count >= k:
-            # If there are enough zeros in the left child, search in the left child
-            return self._find_kth_zero_in_range(l, r, k, left_child, start, mid)
-        else:
-            # Otherwise, search in the right child, adjusting k to find the (k-left_count)-th zero
-            return self._find_kth_zero_in_range(l, r, k - left_count, right_child, mid + 1, end)
+        left = 2 * node + 1
+        right = 2 * node + 2
+
+        # Check left child
+        left_count, left_pos = self.find_kth_zero(l, r, k, left, start, mid)
+        if left_pos != -1:
+            return (left_count, left_pos)
+
+        # Check right child with adjusted k
+        res_count, res_pos = self.find_kth_zero(l, r, k - left_count, right, mid + 1, end)
+        total_count = left_count + res_count
+        return (total_count, res_pos)
 
 
 def solve():
@@ -105,7 +101,7 @@ def solve():
             l = int(query[1]) - 1
             r = int(query[2]) - 1
             k = int(query[3])
-            idx = seg_tree.find_kth_zero(l, r, k, 0, 0, n - 1)
+            _, idx = seg_tree.find_kth_zero(l, r, k, 0, 0, n - 1)
             result.append(idx + 1 if idx != -1 else -1)
     
     print(*result)

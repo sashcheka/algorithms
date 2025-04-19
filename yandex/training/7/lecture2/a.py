@@ -6,7 +6,6 @@ def query(tree, idx, tl, tr, l, r):
         return tree[idx]
 
     tm = tl + (tr - tl) // 2
-
     left = query(tree, 2 * idx + 1, tl, tm, l, min(r, tm))
     right = query(tree, 2 * idx + 2, tm + 1, tr, max(l, tm + 1), r)
 

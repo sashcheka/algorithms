@@ -10,9 +10,7 @@ def query(tree, idx, tl, tr, l, r):
     left = query(tree, 2 * idx + 1, tl, tm, l, min(r, tm))
     right = query(tree, 2 * idx + 2, tm + 1, tr, max(l, tm + 1), r)
 
-    if left[0] == right[0]:
-        return [left[0], left[1]]
-    elif left[0] > right[0]:
+    if left[0] >= right[0]:
         return left
     elif left[0] < right[0]:
         return right
@@ -26,9 +24,7 @@ def build(tree, nums, size):
         left = tree[2 * i + 1]
         right = tree[2 * i + 2]
 
-        if left[0] == right[0]:
-            tree[i] = [left[0], left[1]]
-        elif left[0] > right[0]:
+        if left[0] >= right[0]:
             tree[i] = left
         else:
             tree[i] = right
