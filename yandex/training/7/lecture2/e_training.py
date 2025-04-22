@@ -14,31 +14,19 @@ def query(tree, idx, tl, tr, l, r, k):
         total = tree[idx]
         if total < k:
             return (total, -1)
-            
         if tl == tr:
             return (total, tl)
 
-        mid = (tl + tr) // 2
-        left = 2 * idx + 1
-        left_count = tree[left]
-
-        if left_count >= k:
-            return query(tree, left, tl, mid, l, r, k)
-        else:
-            res = query(tree, left + 1, mid + 1, tr, l, r, k - left_count)
-            return (total, res[1])
-
-    mid = (tl + tr) // 2
+    tm = (tl + tr) // 2
     left = 2 * idx + 1
     right = 2 * idx + 2
 
-    left_count, left_pos = query(tree, left, tl, mid, l, r, k)
+    left_count, left_pos = query(tree, left, tl, tm, l, r, k)
     if left_pos != -1:
         return (left_count, left_pos)
 
-    res_count, res_pos = query(tree, left + 1, mid + 1, tr, l, r, k - left_count)
-    total_count = left_count + res_count
-    return (total_count, res_pos)
+    right_count, right_pos = query(tree, right, tm + 1, tr, l, r, k - left_count)
+    return (left_count + right_count, right_pos)
 
 
 def build(tree, size, nums):

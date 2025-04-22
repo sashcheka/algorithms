@@ -7,8 +7,8 @@ def query(tree, idx, tl, tr, l, r):
 
     tm = tl + (tr - tl) // 2
 
-    left = query(tree, 2 * idx + 1, tl, tm, l, min(r, tm))
-    right = query(tree, 2 * idx + 2, tm + 1, tr, max(l, tm + 1), r)
+    left = query(tree, 2 * idx + 1, tl, tm, l, r)
+    right = query(tree, 2 * idx + 2, tm + 1, tr, l, r)
 
     if left[0] == right[0]:
         return [left[0], left[1]]
