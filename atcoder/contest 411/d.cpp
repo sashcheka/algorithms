@@ -1,44 +1,39 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm> 
 using namespace std;
-
-struct Node {
-    string part;
-    Node* prev;
-    Node(string s, Node* node) : part(s), prev(node) {}
-};
 
 void solve() {
     int n, q;
     cin >> n >> q;
 
-    vector<Node*> pc(n, nullptr);
-    Node* server = nullptr;
-
+    vector<int> type(q);
+    vector<int> p(q);
+    vector<string> s(q);
     for (int i = 0; i < q; i++) {
-        int type, p;
-        cin >> type >> p;
-        p--;
-
-        if (type == 1) {
-            pc[p] = server;
-        } else if (type == 2) {
-            string s;
-            cin >> s;
-            pc[p] = new Node(s, pc[p]);
-        } else if (type == 3) {
-            server = pc[p];
+        cin >> type[i];
+        cin >> p[i];
+        if (type[i] == 2) {
+            cin >> s[i];
+            reverse(s[i].begin(), s[i].end());
         }
     }
-    
-    vector<string> ans;
-    Node* curr = server;
-    while (curr) {
-        ans.push_back(curr->part);
-        curr = curr->prev;
+
+    string ans = "";
+    int i = 0; // server id = 0
+    for (int t = q - i; t >= 0; t--) {
+        if (type[t] == 1) {
+            if (i == p[t]) i = 0;
+        } else if (type[t] == 2) {
+            if (i == p[t]) ans += s[t];
+        } else if (type[t] == 3) {
+            if (i == 0) i = p[t];
+        }
     }
-    for (int i = ans.size() - 1; i >= 0; i--) {
-        cout << ans[i];
-    }
+
+    reverse(ans.begin(), ans.end());
+    cout << ans;
 }
 
 int main() {
