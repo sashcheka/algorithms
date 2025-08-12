@@ -1,12 +1,6 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-long long f(int num, int k) {
-    num %= k;
-    if (num == 0) return 0;
-    return min(num, abs(num - k));
-}
-
 void solve() {
     int n, k;
     cin >> n >> k;
@@ -15,13 +9,23 @@ void solve() {
     for (int i = 0; i < n; i++) cin >> s[i];
     for (int i = 0; i < n; i++) cin >> t[i];
 
-    unordered_map<long long, long long> bs, bt;
+    unordered_map<int, int> dupa;
+    dupa.reserve(n);
     for (int i = 0; i < n; i++) {
-        bs[f(s[i], k)]++;
-        bt[f(t[i], k)]++;
+        int rs = s[i] % k;
+        dupa[min(rs, k - rs)]++;
+        int rt = t[i] % k;
+        dupa[min(rt, k - rt)]--;
     }
 
-    cout << (bs == bt ? "Yes" : "No") << '\n';
+    for (auto& [val, cnt] : dupa) {
+        if (cnt != 0) {
+            cout << "No" << '\n';
+            return;
+        }
+    }
+
+    cout << "Yes" << '\n';
 }
 
 int main() {
