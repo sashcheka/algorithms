@@ -1,4 +1,6 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <vector>
 using namespace std;
 
 void solve() {
@@ -6,13 +8,13 @@ void solve() {
     string t;
     cin >> n >> t;
 
-    vector<long long> cnt = {1, 0}; // {even, odd} counts
     long long ans = 0;
-    int p = 0;
-    for (char ch : t) {
-        if (ch == '0') p ^= 1;
-        ans += cnt[p];
-        cnt[p]++;
+    vector<int> cnt = {1, 0};
+    bool parity = 0;
+    for (int i = 0; i < n; i++) {
+        if (t[i] == '0') parity = !parity;
+        ans += cnt[parity];
+        cnt[parity]++;
     }
 
     cout << ans;
