@@ -1,5 +1,5 @@
 import sys
-sys.setrecursionlimit(1000000)
+sys.setrecursionlimit(1_000_000)
 
 n, m = map(int, input().split())
 grid = [list(map(int, input().split())) for _ in range(n)]
