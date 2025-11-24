@@ -1,17 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAX_POWER = 11;
-
-int get_digits_count(long long x) {
-    int d = 0;
-    while (x) {
-        x /= 10;
-        d++;
-    }
-    return max(d, 1);
-};
-
 void solve() {
     int n;
     long long m;
@@ -19,28 +8,34 @@ void solve() {
     vector<long long> a(n);
     for (int i = 0; i < n; i++) cin >> a[i];
 
-    vector<long long> powers(MAX_POWER);
-    powers[0] = 1 % m;
-    for (int d = 1; d < MAX_POWER; d++) powers[d] = (powers[d - 1] * 10) % m;
+    // unordered_map solution
+    vector<unordered_map<int, int>> rem(11);
+    for (int i = 0; i < n; i++) rem[to_string(a[i]).size()][a[i] % m]++;
 
-    vector<unordered_map<long long, long long>> count(MAX_POWER);
-    for (int i = 0; i < n; i++) {
-        long long mod_ai = a[i] % m;
-        for (int d = 1; d < MAX_POWER; d++) {
-            long long r = (mod_ai * powers[d]) % m;
-            count[d][r]++;
-        }
-    }
+    // binary search solution
+    // vector<vector<int>> rem(11);
+    // for (int i = 0; i < n; i++) rem[to_string(a[i]).size()].push_back(a[i] % m);
+    // for (int i = 0; i < 11; i++) sort(rem[i].begin(), rem[i].end());
 
     long long ans = 0;
     for (int i = 0; i < n; i++) {
-        int d = get_digits_count(a[i]);
-        long long need = (m - (a[i] % m)) % m;
-        if (count[d].count(need)) ans += count[d][need];
+        for (int k = 1; k < 11; k++) {
+            a[i] *= 10;
+            a[i] %= m;
+            int key = (m - a[i]) % m;
+            
+            // unordered_map solution
+            ans += rem[k][key];
+
+            // binary search solution
+            // auto lo = lower_bound(rem[k].begin(), rem[k].end(), key);
+            // auto hi = lower_bound(rem[k].begin(), rem[k].end(), key + 1);
+            // ans += hi - lo;
+        }
     }
 
     cout << ans << '\n';
-    return;
+    return;        
 }
 
 int main() {
