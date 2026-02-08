@@ -1,41 +1,44 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-bool is_valid(long long target, const vector<long long>& a, const int& n) {
-    int l = 0;
-    int r = n - 1;
-    while (r >= 0 && a[r] == target) r--;
-    while (l < r) {
-        if (a[l] + a[r] != target) return false;
-        l++;
-        r--;
-    }
-    if (l == r) return false;
-    return true;
-};
-
 void solve() {
     int n;
     cin >> n;
     vector<long long> a(n);
-    long long mn = LLONG_MAX;
-    long long mx = LLONG_MIN;
-    for (int i = 0; i < n; i++) {
-        cin >> a[i];
-        mn = min(mn, a[i]);
-        mx = max(mx, a[i]);
-    }
+    for (int i = 0; i < n; i++) cin >> a[i];
     sort(a.begin(), a.end());
+    long long mn = a[0];
+    long long mx = a[n - 1];
 
-    long long l1 = mx;
-    long long l2 = mx + mn;
-    vector<long long> ans;
-    if (is_valid(l1, a, n)) ans.push_back(l1);
-    if (n % 2 == 0 && l2 != l1 && is_valid(l2, a, n)) ans.push_back(l2);
+    long long cand_1 = mx;
+    int l = 0;
+    int r = n - 1;
+    while (a[r] == cand_1) r--;
+    if ((r - l + 1) % 2 == 0) {
+        bool valid = true;
+        while (l < r) {
+            if (a[l] + a[r] != cand_1) {
+                valid = false;
+                break;
+            }
+            l++;
+            r--;
+        }
+        if (valid) cout << cand_1 << ' ';
+    }
 
-    sort(ans.begin(), ans.end());
-    int m = ans.size();
-    for (int i = 0; i < m; i++) cout << ans[i] << " \n"[i == m - 1];
+    long long cand_2 = mn + mx;
+    if (n % 2 == 0) {
+        bool valid = true;
+        for (int i = 0; i < n / 2; i++) {
+            if (a[i] + a[n - i - 1] != cand_2) {
+                valid = false;
+                break;
+            }
+        }
+        if (valid) cout << cand_2 << '\n';
+    }
+
     return;
 }
 
