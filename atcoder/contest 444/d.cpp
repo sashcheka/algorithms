@@ -4,35 +4,35 @@ using namespace std;
 void solve() {
     int n;
     cin >> n;
-    vector<int> a(n);
     int mx = 0;
+    vector<int> a(n);
     for (int i = 0; i < n; i++) {
         cin >> a[i];
         mx = max(mx, a[i]);
     }
 
-    vector<long long> diff(mx + 2, 0);
-    for (int x : a) {
-        diff[0] += 1;
-        diff[x] -= 1;
+    vector<int> sweep(mx + 1);
+    for (int i = 0; i < n; i++) {
+        sweep[0] += 1;
+        sweep[a[i]] -= 1;
     }
 
-    vector<int> digits;
-    long long curr = 0;
-    long long carry = 0;
-    for (int p = 0; p < mx; p++) {
-        curr += diff[p];
-        long long val = curr + carry;
-        digits.push_back((int)(val % 10));
-        carry = val / 10;
-    }
-    while (carry > 0) {
-        digits.push_back((int)(carry % 10));
-        carry /= 10;
+    vector<int> digits(mx + 5);
+    int run = 0;
+    int carry = 0;
+    for (int i = 0; i < mx + 5 || carry > 0; i++) {
+        if (i < mx + 1) run += sweep[i];
+        int digit = (run + carry) % 10;
+        digits[i] = digit;
+        carry = (run + carry) / 10;
     }
 
-    int dsize = digits.size();
-    for (int i = dsize - 1; i >= 0; i--) cout << digits[i];
+    bool passed_lead_zeroes = false;
+    for (int i = mx + 4; i >= 0; i--) {
+        if (digits[i] != 0) passed_lead_zeroes = true;
+        if (passed_lead_zeroes) cout << digits[i];
+    }
+
     cout << '\n';
     return;
 }
