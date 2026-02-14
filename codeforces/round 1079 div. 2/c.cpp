@@ -4,10 +4,11 @@ using namespace std;
 void solve() {
     long long p, q;
     cin >> p >> q;
-    if (q > p && 2*q <= 3*p) {
-        cout << "Bob" << "\n";
-    } else {
+    long long d = q - p;
+    if (p >= q || p < 2*d) {
         cout << "Alice" << "\n";
+    } else {
+        cout << "Bob" << "\n";
     }
     return;
 }
