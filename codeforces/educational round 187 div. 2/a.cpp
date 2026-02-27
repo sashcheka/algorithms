@@ -4,16 +4,8 @@ using namespace std;
 void solve() {
     int n, m, d;
     cin >> n >> m >> d;
-    if (m > d) {
-        cout << n << '\n';
-        return;
-    }
-    int ans = 0;
-    while (n > 0) {
-        n--;
-        n -= d / m;
-        ans++;
-    }
+    int k = d / m + 1;
+    int ans = (n + k - 1) / k;
     cout << ans << '\n';
     return;
 }
