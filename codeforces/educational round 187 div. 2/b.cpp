@@ -2,44 +2,24 @@
 using namespace std;
 
 void solve() {
-    long long x;
-    cin >> x;
-    vector<int> digits;
-    digits.reserve(19);
-    long long temp = x;
-    int f1 = 0;
-    while (temp) {
-        int digit = temp % 10;
-        f1 += digit;
-        digits.push_back(digit);
-        temp /= 10;
+    string s;
+    cin >> s;
+    int n = (int)s.size();
+    int sum = 0;
+    vector<int> a(n);
+    for (int i = n - 1; i >= 0; --i) {
+        int d = s[i] - '0';
+        sum += d;
+        a[i] = d;
     }
-    int first = digits.back();
-    digits.pop_back();
-    digits.push_back(first - 1);
-
-    temp = f1;
-    int f2 = 0;
-    while (temp) {
-        int digit = temp % 10;
-        f2 += digit;
-        temp /= 10;
-    }
-
-    if (f1 == f2) {
-        cout << 0 << '\n';
-        return;
-    }
-
-    sort(digits.rbegin(), digits.rend());
-    int i = 0;
+    --a[0];
+    sort(a.begin(), a.end(), greater<int>());
     int ans = 0;
-    while (f1 >= 10) {
-        f1 -= min(f1 - 9, digits[i]);
+    int i = 0;
+    while (sum >= 10) {
+        sum -= a[i++];
         ans++;
-        i++;
     }
-
     cout << ans << '\n';
     return;
 }
