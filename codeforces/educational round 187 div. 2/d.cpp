@@ -2,44 +2,43 @@
 using namespace std;
 
 void solve() {
-    int n, m;
+    size_t n, m;
     cin >> n >> m;
-    vector<int> a(n);
-    for (int i = 0; i < n; i++) cin >> a[i];
-    vector<int> b(m);
-    for (int i = 0; i < m; i++) cin >> b[i];
-
-    int size = n + m + 1;
-    vector<int> freq(size, 0);
-    for (const int& x : a) freq[x]++;
-
-    vector<int> multiplicity(size, 0);
-    for (int x = 1; x < size; x++) {
-        if (freq[x] == 0) continue;
-        for (int y = x; y < size; y += x) {
-            multiplicity[y] += freq[x];
+    size_t MAX = n + m;
+    vector<int> cnt_x(MAX + 1);
+    for (size_t i = 0; i < n; i++) {
+        int x;
+        cin >> x;
+        cnt_x[x]++;
+    }
+    vector<int> div_y(MAX + 1);
+    for (size_t i = 1; i <= MAX; i++) {
+        if (cnt_x[i] == 0) continue;
+        for (size_t j = i; j <= MAX; j += i) {
+            div_y[j] += cnt_x[i];
         }
     }
-
     int alice = 0;
     int bob = 0;
     int both = 0;
-    for (const int& y : b) {
-        if (multiplicity[y] == n) alice++;
-        else if (multiplicity[y] == 0) bob++;
-        else both++;        
+    for (size_t i = 0; i < m; i++) {
+        int y;
+        cin >> y;
+        if (div_y[y] == 0) {
+            bob++;
+        } else if (div_y[y] == n) {
+            alice++;
+        } else {
+            both++;
+        }
     }
-
-    string winner;
     if (alice > bob) {
-        winner = "Alice";
+        cout << "Alice" << "\n";
     } else if (alice < bob) {
-        winner = "Bob";
+        cout << "Bob" << "\n";
     } else {
-        winner = (both % 2) ? "Alice" : "Bob";
+        cout << (both % 2 ? "Alice" : "Bob") << "\n";
     }
-
-    cout << winner << '\n';
     return;
 }
 
