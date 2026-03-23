@@ -7,36 +7,27 @@ int main() {
     ll n;
     cin >> n;
 
-    ll ans = LLONG_MAX;
-
-    auto check = [&](ll rows) {
-        ll rem = n % rows;
-        ll max_row = n / rows + (rem > 0);
-
-        if (rem == 0) {
-            ans = min(ans, llabs(rows - max_row));
-            return;
+    ll best = LLONG_MAX;
+    for (ll r = 1; r * r <= 2 * n + 1; r++) {
+        if (n % r == 0) {
+            ll c = n / r;
+            ll cand = abs(r - c);
+            best = min(best, cand);
+        } else if ((n + n) % r == 0) {
+            ll c = (n + n) / r;
+            ll cand = abs(r - (c + 1) / 2);
+            best = min(best, cand);
+        } else if ((n + n + 1) % r == 0) {
+            ll c = (n + n + 1) / r;
+            ll cand = abs(r - (c + 1) / 2);
+            best = min(best, cand);
+        } else if ((n + n - 1) % r == 0) {
+            ll c = (n + n - 1) / r;
+            ll cand = abs(r - (c + 1) / 2);
+            best = min(best, cand);
         }
+    }
 
-        if (llabs(2 * rem - rows) <= 1) {
-            ans = min(ans, llabs(rows - max_row));
-        }
-    };
-
-    auto go = [&](ll students) {
-        for (ll rows = 1; rows * rows <= students; rows++) {
-            if (students % rows == 0) {
-                check(rows);
-                check(students / rows);
-            }
-        }
-    };
-
-    go(n);
-    go(2 * n - 1);
-    go(2 * n);
-    go(2 * n + 1);
-
-    cout << ans;
+    cout << best;
     return 0;
 }
