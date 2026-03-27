@@ -6,40 +6,39 @@ int main() {
     string s;
     cin >> s;
 
-    int max_cnt = 0;
-    set<char> chars(s.begin(), s.end());
+    int n = s.size();
 
-    for (char c : chars) {
-        int cnt = count(s.begin(), s.end(), c);
-        max_cnt = max(max_cnt, cnt);
+    int max_freq = 0;
+    unordered_set<char> chs;
+    chs.reserve(26);
+    vector<int> freq(26);
+    vector<vector<int>> pos(26);
+    for (int i = 0; i < n; i++) {
+        char ch = s[i];
+        chs.insert(ch);
+        ++freq[ch - 'a'];
+        max_freq = max(max_freq, freq[ch - 'a']);
+        pos[ch - 'a'].push_back(i);
     }
 
-    int ans = 1;
+    int best = 1;
+    for (char ch : chs) {
+        if (freq[ch - 'a'] != max_freq) continue;
 
-    for (char c : chars) {
-        if (count(s.begin(), s.end(), c) != max_cnt) continue;
-
-        vector<int> p;
-        for (int i = 0; i < (int)s.size(); i++) {
-            if (s[i] == c) p.push_back(i);
-        }
-
-        int cur = 1;
-        while (true) {
-            bool ok = true;
-            for (int i : p) {
-                if (i + cur >= (int)s.size() || s[i + cur] != s[p[0] + cur]) {
-                    ok = false;
+        const vector<int>& p = pos[ch - 'a'];
+        for (int cand = 1; cand <= 26; cand++) {
+            bool valid = true;
+            for (const int& i : p) {
+                if (i + cand >= n || s[p[0] + cand] != s[i + cand]) {
+                    valid = false;
                     break;
                 }
             }
-            if (!ok) break;
-            cur++;
+            if (!valid) break;
+            best = max(best, cand + 1);
         }
-
-        ans = max(ans, cur);
     }
 
-    cout << ans << endl;
+    cout << best;
     return 0;
 }

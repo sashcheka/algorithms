@@ -9,53 +9,58 @@ int main() {
     int n = s.size();
 
     vector<vector<int>> pos(26);
-    for (int i = 0; i < n; i++) pos[s[i] - 'a'].push_back(i);
-
     int mx = 0;
-    for (int c = 0; c < 26; c++) mx = max(mx, (int)pos[c].size());
-
-    const ull B = 239017;
-    vector<ull> h(n + 1), p(n + 1, 1);
     for (int i = 0; i < n; i++) {
-        h[i + 1] = h[i] * B + s[i];
-        p[i + 1] = p[i] * B;
+        pos[s[i] - 'a'].push_back(i);
+        mx = max(mx, (int)pos[s[i] - 'a'].size());
     }
 
-    auto get = [&](int l, int len) {
-        return h[l + len] - h[l] * p[len];
+    const int base = 137;
+    vector<ull> hash(n + 1);
+    vector<ull> power(n + 1, 1);
+    for (int i = 0; i < n; i++) {
+        hash[i + 1] = hash[i] * base + s[i];
+        power[i + 1] = power[i] * base;
+    }
+
+    auto get = [&](const int& l, const int& len) -> ull {
+        return hash[l + len] - hash[l] * power[len];
     };
 
-    int ans = 1;
+    int best = 1;
+    for (int i = 0; i < 26; i++) {
+        if (pos[i].size() != mx) continue;
 
-    for (int c = 0; c < 26; c++) {
-        if ((int)pos[c].size() != mx) continue;
+        const vector<int>& p = pos[i];
 
-        auto &v = pos[c];
-        int lim = n - v.back();
-
-        for (int i = 0; i + 1 < (int)v.size(); i++)
-            lim = min(lim, v[i + 1] - v[i]);
-
-        int l = 1, r = lim, best = 1;
+        int l = 1;
+        int r = n - p.back();
+        for (int j = 1; j < p.size(); j++) {
+            r = min(r, p[j] - p[j - 1]);
+        }
+        int cand = 1;
         while (l <= r) {
-            int m = (l + r) / 2;
-            ull cur = get(v[0], m);
+            int m = l + (r - l) / 2;
             bool ok = true;
+            ull curr = get(p[0], m);
 
-            for (int i = 1; i < (int)v.size(); i++) {
-                if (get(v[i], m) != cur) {
+            for (int j : p) {
+                if (curr != get(j, m)) {
                     ok = false;
                     break;
                 }
             }
 
-            if (ok) best = m, l = m + 1;
-            else r = m - 1;
+            if (ok) {
+                cand = m;
+                l = m + 1;
+            } else {
+                r = m - 1;
+            }
         }
-
-        ans = max(ans, best);
+        best = max(best, cand);
     }
 
-    cout << ans;
+    cout << best;
     return 0;
 }
