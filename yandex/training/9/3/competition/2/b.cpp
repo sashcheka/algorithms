@@ -10,26 +10,17 @@ int main() {
     for (int c = 0; c < cases; c++) {
         ll n, d;
         cin >> n >> d;
-        ll best = n + 1;
-
-        vector<pair<ll, ll>> row(n);
-        vector<int> prefix(n + 1);
+        ll ans = 0;
+        ll run = 0;
+        
         for (int i = 0; i < n; i++) {
             ll t, k;
             cin >> t >> k;
-            row[i] = {t, k};
-            prefix[i + 1] = prefix[i] + k;
+            if (t < run + d) ans = i + 1;
+            run += k;
         }
 
-        for (int i = n - 1; i >= 0; i--) {
-            if (prefix[i] + d <= row[i].first) {
-                best = min(best, (long long)i + 1);
-            } else {
-                break;
-            }
-        }
-
-        cout << best << "\n";
+        cout << ans + 1 << "\n";
     }
 
     return 0;
