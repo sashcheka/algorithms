@@ -5,21 +5,13 @@ using namespace std;
 int main() {
     int n, m;
     cin >> n >> m;
-
     unordered_set<int> s;
-
-    bool all = true;
     for (int i = 0; i < n; i++) {
         int f;
         cin >> f;
-        if (!s.insert(f).second) all = false;
+        s.insert(f);
     }
-
-    if (all) cout << "Yes" << "\n";
-    else cout << "No" << "\n";
-
-    if ((int)s.size() == m) cout << "Yes" << "\n";
-    else cout << "No" << "\n";
-
+    cout << ((int)s.size() == n ? "Yes" : "No") << "\n";
+    cout << ((int)s.size() == m ? "Yes" : "No") << "\n";
     return 0;
 }
