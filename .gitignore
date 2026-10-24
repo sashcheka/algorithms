@@ -3,3 +3,4 @@ main.cpp
 *.out
 main.py
 *.txt
+.DS_Store
